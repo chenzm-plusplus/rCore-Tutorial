@@ -45,6 +45,22 @@ impl Allocator for SegtreeAllocator {
         }
     }
 
+    /// initlize tree
+    /// i:节点编号
+    /// left：当前节点的左孩子是谁
+    /// right：当前节点的右孩子是谁
+    fn build_tree(&mut self, i:usize, left:usize, right:usize){
+        self.list[i].left_child=left;
+        self.list[i].right_child=right;
+        self.list[i].value=false;
+        if(left==right){
+            return
+        }
+        let mid=(left+right)/2;
+        build_tree(i*2,left,mid);
+        build_tree(i*2+1,mid+1,right);
+    }
+
     fn alloc(&mut self) -> Option<usize> {
         // if let Some((start, end)) = self.list.pop() {
         //     if end - start > 1 {
