@@ -32,6 +32,9 @@ pub fn init() {
 pub fn handle_interrupt(context: &mut Context, scause: Scause, stval: usize) {
     println!("handle_interrupts");
     println!("handle_interrupts......\nstval is {}",stval);
+    if(stval==0){
+        println!("SUCCESS!");
+    }
     // 返回的 Context 必须位于放在内核栈顶
     match scause.cause() {
         // 断点中断（ebreak）

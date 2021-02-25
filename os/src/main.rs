@@ -44,5 +44,5 @@ pub extern "C" fn rust_main() {
 
     //Trap::Exception(Exception::LoadFault) => panic!()
 
-    //panic!("end of rust_main");
+    panic!("end of rust_main");
 }
