@@ -30,12 +30,15 @@ pub fn init() {
 /// 具体的中断类型需要根据 scause 来推断，然后分别处理
 #[no_mangle]
 pub fn handle_interrupt(context: &mut Context, scause: Scause, stval: usize) {
+    println!("handle_interrupts");
+    println!("handle_interrupts......\nstval is {}",stval);
     // 返回的 Context 必须位于放在内核栈顶
     match scause.cause() {
         // 断点中断（ebreak）
         Trap::Exception(Exception::Breakpoint) => breakpoint(context),
         // 时钟中断
         Trap::Interrupt(Interrupt::SupervisorTimer) => supervisor_timer(context),
+        //之后如果加入对异常等的处理就可以在这里加入
         // 其他情况，终止当前线程
         _ => fault(context, scause, stval),
     };
