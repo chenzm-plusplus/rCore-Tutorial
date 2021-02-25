@@ -42,6 +42,7 @@ pub fn handle_interrupt(context: &mut Context, scause: Scause, stval: usize) {
         // 时钟中断
         Trap::Interrupt(Interrupt::SupervisorTimer) => supervisor_timer(context),
         //之后如果加入对异常等的处理就可以在这里加入
+        Trap::Exception(Exception::LoadFault) => panic!("Trap::Exception(Exception::LoadFault)"),
         // 其他情况，终止当前线程
         _ => fault(context, scause, stval),
     };
@@ -50,6 +51,7 @@ pub fn handle_interrupt(context: &mut Context, scause: Scause, stval: usize) {
 /// 处理 ebreak 断点
 ///
 /// 继续执行，其中 `sepc` 增加 2 字节，以跳过当前这条 `ebreak` 指令
+/// sepc指定的是返回之后寄存器的地址
 fn breakpoint(context: &mut Context) {
     println!("Breakpoint at 0x{:x}", context.sepc);
     context.sepc += 2;

@@ -42,7 +42,5 @@ pub extern "C" fn rust_main() {
     //这里就是执行ebreak函数的意思
     unsafe { llvm_asm!("ebreak") };
 
-    //Trap::Exception(Exception::LoadFault) => panic!()
-
     panic!("end of rust_main");
 }
