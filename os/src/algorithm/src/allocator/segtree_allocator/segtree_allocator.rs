@@ -29,7 +29,7 @@ impl Allocator for SegtreeAllocator {
     fn new(capacity: usize) -> Self {
         // 这里对list做初始化，先填进去4*capacity个SegNode
         let mut v = Vec::new();
-        for i in 1..4*capacity{
+        for i in 1..4*capacity+1{
             let node = SegNode{
                 left_child: 0,
                 right_child: 0,
@@ -37,28 +37,14 @@ impl Allocator for SegtreeAllocator {
             };
             v.push(node);
         }
+        SegtreeAllocator::test();
+        //build_tree(1,1,capacity);
         Self {
             //list: vec![(0, capacity)],
             //println!("SegtreeAllocator instruction...");
             // list: vec![node;4*capacity],
             list: v,
         }
-    }
-
-    /// initlize tree
-    /// i:节点编号
-    /// left：当前节点的左孩子是谁
-    /// right：当前节点的右孩子是谁
-    fn build_tree(&mut self, i:usize, left:usize, right:usize){
-        self.list[i].left_child=left;
-        self.list[i].right_child=right;
-        self.list[i].value=false;
-        if(left==right){
-            return
-        }
-        let mid=(left+right)/2;
-        build_tree(i*2,left,mid);
-        build_tree(i*2+1,mid+1,right);
     }
 
     fn alloc(&mut self) -> Option<usize> {
@@ -75,5 +61,27 @@ impl Allocator for SegtreeAllocator {
 
     fn dealloc(&mut self, index: usize) {
         //self.list.push((index, index + 1));
+    }
+}
+
+impl SegtreeAllocator{
+    /// initlize tree
+    /// i:节点编号
+    /// left：当前节点的左孩子是谁
+    /// right：当前节点的右孩子是谁
+    /// root number: 1
+    fn build_tree(&mut self, i:usize, left:usize, right:usize){
+        self.list[i].left_child=left;
+        self.list[i].right_child=right;
+        self.list[i].value=false;
+        if(left==right){
+            return
+        }
+        let mid=(left+right)/2;
+        SegtreeAllocator::build_tree(self,i*2,left,mid);
+        SegtreeAllocator::build_tree(self,i*2+1,mid+1,right);
+    }
+    fn test(){
+        //println!("test pass!");
     }
 }
