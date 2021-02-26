@@ -13,7 +13,7 @@ pub struct SegNode {
     left_child: usize,
     right_child: usize,
     value: bool,//false表示儿子们当中还有未被分配的节点，true表示儿子们当中的节点以及被分配完了
-    lazy: bool,//lazy标记表示，每次插入节点的时候需要更新整个线段树到叶子节点。但是这样成本太高了，所以改为在需要更新到叶子节点的时候才修改
+    //lazy: bool,//lazy标记表示，每次插入节点的时候需要更新整个线段树到叶子节点。但是这样成本太高了，所以改为在需要更新到叶子节点的时候才修改
 }
 
 pub struct Segtree {
@@ -57,13 +57,15 @@ impl Segtree{
         //println!("test pass!");
     }
 
-    fn insert(&mut self,int i,int left_node,int right_node)
+    fn insert(&mut self,i:usize,left_node:usize,right_node:usize)
     {
         let mut mid=(self.list[i].left_child+self.list[i].right_child)/2;
         //没有覆盖
-        if(self.list[i].right_child<left_node or right_node<self.list[i].left_child) return;
+        if(self.list[i].right_child<left_node || right_node<self.list[i].left_child) {
+            return
+        }
         //被当前区间覆盖
-        else if(left_node<=self.list[i].left_child and self.list[i].right_child<=right_node){
+        else if(left_node<=self.list[i].left_child && self.list[i].right_child<=right_node){
             self.list[i].value = true;
             //TODO:需要把所有的儿子们都标注成true
             //为了性能，这里改为delete某一个seg的时候再把这个标记push下去
