@@ -15,43 +15,31 @@ const BITMAP_SIZE: usize = 4096;
 /// 每个元素 tuple `(start, end)` 表示 [start, end) 区间为可用。
 /// 
 pub struct SegtreeAllocator {
-    list: Vec<Segtree>,
+    tree: Segtree,
 }
 
 impl Allocator for SegtreeAllocator {
     //capacity表示一共有多少个可分配的页面
     fn new(capacity: usize) -> Self {
         // 这里对list做初始化，先填进去4*capacity个SegNode
-        let mut v = Vec::new();
-        // for i in 1..4*capacity+1{
-        //     let node = SegNode{
-        //         left_child: 0,
-        //         right_child: 0,
-        //         value: false,
-        //     };
-        //     v.push(node);
-        // }
-        // SegtreeAllocator::test();
-        // //build_tree(1,1,capacity);
-        // SegtreeAllocator::build_tree(1,1,capacity);
+        let mut t = Segtree::new(capacity);
+        t.build();
         Self {
-            list: v,
+            tree: t,
         }
     }
 
     fn alloc(&mut self) -> Option<usize> {
-        // if let Some((start, end)) = self.list.pop() {
-        //     if end - start > 1 {
-        //         self.list.push((start + 1, end));
-        //     }
-        //     Some(start)
-        // } else {
-        //     None
-        // }
-        None
+        let node = self.tree.find_a_node();
+        if node > 0 {
+            self.tree.insert_node(node);
+            Some(node)
+        }else{
+            None
+        }
     }
 
     fn dealloc(&mut self, index: usize) {
-        //self.list.push((index, index + 1));
+        self.tree.remove_node(index);
     }
 }

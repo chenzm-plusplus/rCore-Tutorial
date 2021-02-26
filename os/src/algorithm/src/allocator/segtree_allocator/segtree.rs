@@ -40,7 +40,7 @@ impl Segtree{
     /// right：当前节点的右孩子是谁
     /// root number: 1
     /// ATTENTION! TODO:waiting for checking......
-    pub fn build_tree(&mut self,i:usize, left:usize, right:usize){
+    fn build_tree(&mut self,i:usize, left:usize, right:usize){
         self.list[i].left_child=left;
         self.list[i].right_child=right;
         self.list[i].value=false;
@@ -52,6 +52,10 @@ impl Segtree{
         let mid=(left+right)/2;
         Segtree::build_tree(self,i*2,left,mid);
         Segtree::build_tree(self,i*2+1,mid+1,right);
+    }
+
+    pub fn build(&mut self){
+        Segtree::build_tree(self,1,1,self.capacity);
     }
 
     //todo:拥有lazy标记
