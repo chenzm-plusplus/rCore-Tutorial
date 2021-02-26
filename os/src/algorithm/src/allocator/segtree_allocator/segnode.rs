@@ -49,7 +49,7 @@ impl Segtree{
         //println!("test pass!");
     }
 
-    fn insert(&mut self,i:usize,left_node:usize,right_node:usize)
+    fn change(&mut self,i:usize,left_node:usize,right_node:usize,is_allocated:bool)
     {
         let mut mid=(self.list[i].left_child+self.list[i].right_child)/2;
         //没有覆盖
@@ -58,7 +58,7 @@ impl Segtree{
         }
         //被当前区间覆盖
         else if(left_node<=self.list[i].left_child && self.list[i].right_child<=right_node){
-            self.list[i].value = true;
+            self.list[i].value = is_allocated;
             //TODO:需要把所有的儿子们都标注成true
             //为了性能，这里改为delete某一个seg的时候再把这个标记push下去
             //因此线段树还需要一个lazy标记
@@ -66,22 +66,28 @@ impl Segtree{
             /// 为了方便起见还是现在就更新到叶子节点吧
             /// 应该不会出问题？
             if(self.list[i].left_child != self.list[i].right_child){
-                Segtree::insert(self,i*2,left_node,mid);
-                Segtree::insert(self,i*2+1,mid+1,right_node);
+                Segtree::change(self,i*2,left_node,mid,is_allocated);
+                Segtree::change(self,i*2+1,mid+1,right_node,is_allocated);
             }
         }
         //仅在左子区间
         else if(right_node<=mid){
-            Segtree::insert(self,i*2,left_node,right_node);
+            Segtree::change(self,i*2,left_node,right_node,is_allocated);
         }
         //仅在右子区间
         else if(left_node>=mid+1){
-            Segtree::insert(self,i*2+1,left_node,right_node); 
+            Segtree::change(self,i*2+1,left_node,right_node,is_allocated); 
         }
         //分在左右区间
         else{
-            Segtree::insert(self,i*2,left_node,mid);
-            Segtree::insert(self,i*2+1,mid+1,right_node);
+            Segtree::change(self,i*2,left_node,mid,is_allocated);
+            Segtree::change(self,i*2+1,mid+1,right_node,is_allocated);
         }
+    }
+    fn insert(&mut self,i:usize,left_node:usize,right_node:usize){
+        Segtree::change(self,i,left_node,right_node,true);
+    }
+    fn remove(&mut self,i:usize,left_node:usize,right_node:usize){
+        Segtree::change(self,i,left_node,right_node,false);
     }
 }
